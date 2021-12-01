@@ -6,7 +6,6 @@ import java.lang.Math;
 class TowerOfHanoi {
 
     private static int diskNumber;
-    private static String towerOne, towerTwo, towerThree;
     private final String[] towerNames = new String[3];
     private final Stack<String> tower1 = new Stack<>();
     private final Stack<String> tower2 = new Stack<>();
@@ -33,9 +32,8 @@ class TowerOfHanoi {
                 "Good luck, " + playerName + "!");
     }
 
-    private void validateInput() {
+    private void validateDiskInput() {
         do { getDiskInput(); } while (!isInRange(diskNumber));
-        getTowerNames();
     }
 
     private void getDiskInput() {
@@ -64,20 +62,20 @@ class TowerOfHanoi {
         }
     }
 
-    private void getTowerNames() {
+    private String[] getTowerNames() {
         Scanner scanner = createScanner();
         System.out.print("Enter the name of the first tower: ");
-        towerOne = scanner.next();
+        String towerOne = scanner.next();
         towerNames[0] = towerOne;
         System.out.print("Enter the name of the second tower: ");
-        towerTwo = scanner.next();
+        String towerTwo = scanner.next();
         while (Objects.equals(towerOne, towerTwo)) {
             System.out.print("Tower names can't be the same. Please enter a different name for the second tower: ");
             towerTwo = scanner.next();
         }
         towerNames[1] = towerTwo;
         System.out.print("Enter the name of the third tower: ");
-        towerThree = scanner.next();
+        String towerThree = scanner.next();
         while (Objects.equals(towerTwo, towerThree) || Objects.equals(towerOne, towerThree)) {
             System.out.print("Tower names can't be the same. Please enter a different name for the third tower: ");
             towerThree = scanner.next();
@@ -85,6 +83,8 @@ class TowerOfHanoi {
         towerNames[2] = towerThree;
         System.out.println("First Tower is " + towerOne + ", " + "Second Tower is " + towerTwo + ", "
                 + "and Third Tower is " + towerThree);
+
+        return towerNames;
     }
 
     private void correctStep(int n, String startPole, String middlePole, String endPole) {
@@ -103,13 +103,13 @@ class TowerOfHanoi {
         correctStep(n - 1, middlePole, startPole, endPole);
     }
 
-    private void initialState() {
+    private void setInitialState() {
         for (int i=diskNumber; i>=1; i--) {
             tower1.push(Integer.toString(i));
         }
-        System.out.println("Initial State --> Tower " + towerOne + " : " + tower1);
-        System.out.println("                  Tower " + towerTwo + " : " + tower2);
-        System.out.println("                  Tower " + towerThree + " : " + tower3);
+        System.out.println("Initial State --> Tower " + towerNames[0] + " : " + tower1);
+        System.out.println("                  Tower " + towerNames[1] + " : " + tower2);
+        System.out.println("                  Tower " + towerNames[2] + " : " + tower3);
     }
 
     private Stack<String> towerDecisionMaker(String inputPole) {
@@ -128,8 +128,9 @@ class TowerOfHanoi {
     public static void main(String[] args) {
         TowerOfHanoi game = new TowerOfHanoi();
         game.getUserName();
-        game.validateInput();
-        game.initialState();
-        game.correctStep(diskNumber, towerOne, towerTwo, towerThree);
+        game.validateDiskInput();
+        String[] towerList = game.getTowerNames();
+        game.setInitialState();
+        game.correctStep(diskNumber, towerList[0], towerList[1], towerList[2]);
     }
 }
