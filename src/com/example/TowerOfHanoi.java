@@ -3,20 +3,20 @@ package com.example;
 import java.util.*;
 import java.lang.Math;
 
-public class TowerOfHanoi {
+class TowerOfHanoi {
 
     private static int diskNumber;
     private static String towerOne, towerTwo, towerThree;
-    private static final String[] towerNames = new String[3];
-    private static final Stack<String> tower1 = new Stack<>();
-    private static final Stack<String> tower2 = new Stack<>();
-    private static final Stack<String> tower3 = new Stack<>();
+    private final String[] towerNames = new String[3];
+    private final Stack<String> tower1 = new Stack<>();
+    private final Stack<String> tower2 = new Stack<>();
+    private final Stack<String> tower3 = new Stack<>();
 
     private static Scanner createScanner() {
         return new Scanner(System.in);
     }
 
-    private static void getUserName() {
+    private void getUserName() {
         System.out.print("Enter your username: ");
         Scanner scanner = createScanner();
         String playerName = scanner.next();
@@ -33,12 +33,12 @@ public class TowerOfHanoi {
                 "Good luck, " + playerName + "!");
     }
 
-    private static void validateInput() {
+    private void validateInput() {
         do { getDiskInput(); } while (!isInRange(diskNumber));
         getTowerNames();
     }
 
-    private static void getDiskInput() {
+    private void getDiskInput() {
         System.out.print("Enter the number of disks you want to play [from 2-15]: ");
         Scanner scanner = createScanner();
 
@@ -51,7 +51,7 @@ public class TowerOfHanoi {
         }
     }
 
-    private static boolean isInRange(int input) {
+    private boolean isInRange(int input) {
         if (input > 1 & input <= 15) {
             int availableSteps = ((int) Math.pow(2, input) - 1);
             System.out.println("Available number of steps: " + availableSteps);
@@ -64,31 +64,30 @@ public class TowerOfHanoi {
         }
     }
 
-    private static void getTowerNames() {
+    private void getTowerNames() {
         Scanner scanner = createScanner();
         System.out.print("Enter the name of the first tower: ");
         towerOne = scanner.next();
         towerNames[0] = towerOne;
         System.out.print("Enter the name of the second tower: ");
         towerTwo = scanner.next();
+        while (Objects.equals(towerOne, towerTwo)) {
+            System.out.print("Tower names can't be the same. Please enter a different name for the second tower: ");
+            towerTwo = scanner.next();
+        }
         towerNames[1] = towerTwo;
         System.out.print("Enter the name of the third tower: ");
         towerThree = scanner.next();
+        while (Objects.equals(towerTwo, towerThree) || Objects.equals(towerOne, towerThree)) {
+            System.out.print("Tower names can't be the same. Please enter a different name for the third tower: ");
+            towerThree = scanner.next();
+        }
         towerNames[2] = towerThree;
         System.out.println("First Tower is " + towerOne + ", " + "Second Tower is " + towerTwo + ", "
                 + "and Third Tower is " + towerThree);
     }
 
-    private static boolean isValidInput(String input, String[] inputList) {
-        for (String item : inputList) {
-            if (Objects.equals(input, item)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void correctStep(int n, String startPole, String middlePole, String endPole) {
+    private void correctStep(int n, String startPole, String middlePole, String endPole) {
         if (n == 0) { return; }
         correctStep(n - 1, startPole, endPole, middlePole);
         Stack<String> source = towerDecisionMaker(startPole);
@@ -100,11 +99,11 @@ public class TowerOfHanoi {
             }
         }
         System.out.println("Move " + n + " disk" + " from tower " + startPole + " to tower " + endPole);
-        System.out.println(tower1 + " || " + tower2 + " || " + tower3);
+        System.out.println(tower1 + " | " + tower2 + " | " + tower3);
         correctStep(n - 1, middlePole, startPole, endPole);
     }
 
-    private static void initialState() {
+    private void initialState() {
         for (int i=diskNumber; i>=1; i--) {
             tower1.push(Integer.toString(i));
         }
@@ -113,7 +112,7 @@ public class TowerOfHanoi {
         System.out.println("                  Tower " + towerThree + " : " + tower3);
     }
 
-    private static Stack<String> towerDecisionMaker(String inputPole) {
+    private Stack<String> towerDecisionMaker(String inputPole) {
         if (Objects.equals(inputPole, towerNames[0])) {
             return tower1;
         }
@@ -127,9 +126,10 @@ public class TowerOfHanoi {
     }
 
     public static void main(String[] args) {
-        getUserName();
-        validateInput();
-        initialState();
-        correctStep(diskNumber, towerOne, towerTwo, towerThree);
+        TowerOfHanoi game = new TowerOfHanoi();
+        game.getUserName();
+        game.validateInput();
+        game.initialState();
+        game.correctStep(diskNumber, towerOne, towerTwo, towerThree);
     }
 }
